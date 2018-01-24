@@ -1,54 +1,55 @@
 import csv
+import pandas as pd
+import numpy as np
 import random
 import math
 import operator
 
 
 def loadDataset(filename, split, trainingSet = [], testSet = []):
-    with open(filename, 'rb') as csvfile:
-        lines = csv.reader(csvfile)
-        dataset = list(lines)
-        for x in range(len(dataset)-1):
-            for y in range(4):
-                dataset[x][y] = float(dataset[x][y])
-            if random.random() < split:
-                trainingSet.append(dataset[x])
-            else:
-                testSet.append(dataset[x])
+    df = pd.read_csv(filename,encoding='utf-8',header=None)
+    dataset = np.array(df)
+    for x in range(len(df)):
+        if random.random() < split:
+            trainingSet.append(dataset[x])
+        else:
+            testSet.append(dataset[x])
 
 
 def euclideanDistance(instance1, instance2, length):
     distance = 0
     for x in range(length):
-        distance += pow((instance1[x]-instance2[x]), 2)
+        distance += pow(instance1[x]-instance2[x],2)
     return math.sqrt(distance)
 
 
+
 def getNeighbors(trainingSet, testInstance, k):
-    distances = []
+    distance = []
     length = len(testInstance)-1
     for x in range(len(trainingSet)):
-        #testinstance
-        dist = euclideanDistance(testInstance, trainingSet[x], length)
-        distances.append((trainingSet[x], dist))
-        #distances.append(dist)
-    distances.sort(key=operator.itemgetter(1))
+        dis = euclideanDistance(trainingSet[x], testInstance, length)
+        distance.append((trainingSet[x],dis))
+    distance.sort(key=operator.itemgetter(1))
     neighbors = []
     for x in range(k):
-        neighbors.append(distances[x][0])
-        return neighbors
+        neighbors.append(distance[x][0])
+    return neighbors
+
+
 
 
 def getResponse(neighbors):
-    classVotes = {}
+    classvotes = {}
     for x in range(len(neighbors)):
         response = neighbors[x][-1]
-        if response in classVotes:
-            classVotes[response] += 1
+        if response in classvotes:
+            classvotes[response] += 1
         else:
-            classVotes[response] = 1
-    sortedVotes = sorted(classVotes.iteritems(), key=operator.itemgetter(1), reverse=True)
-    return sortedVotes[0][0]
+            classvotes[response] = 1
+    sorted_votes = sorted(classvotes.items(),key=operator.itemgetter(1), reverse=True)
+    return sorted_votes[0][0]
+
 
 
 def getAccuracy(testSet, predictions):
@@ -56,7 +57,7 @@ def getAccuracy(testSet, predictions):
     for x in range(len(testSet)):
         if testSet[x][-1] == predictions[x]:
             correct += 1
-    return (correct/float(len(testSet)))*100.0
+    return (correct/float(len(testSet))) * 100
 
 
 def main():
@@ -64,7 +65,7 @@ def main():
     trainingSet = []
     testSet = []
     split = 0.67
-    loadDataset(r'/home/zhoumiao/ML/02KNearestNeighbor/irisdata.txt', split, trainingSet, testSet)
+    loadDataset('irisdata.txt', split, trainingSet, testSet)
     print('Train set: ' + repr(len(trainingSet)))
     print('Test set: ' + repr(len(testSet)))
     #generate predictions
@@ -76,41 +77,8 @@ def main():
         result = getResponse(neighbors)
         predictions.append(result)
         print ('>predicted=' + repr(result) + ', actual=' + repr(testSet[x][-1]))
-    print ('predictions: ' + repr(predictions))
     accuracy = getAccuracy(testSet, predictions)
     print('Accuracy: ' + repr(accuracy) + '%')
 
-
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
