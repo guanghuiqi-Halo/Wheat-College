@@ -22,13 +22,13 @@ yy_down = a*xx + (b[1] - a*b[0])
 b = clf.support_vectors_[-1]
 yy_up = a*xx + (b[1] - a*b[0])
 
-print "w: ", w
-print "a: ", a
+print("w: ", w)
+print("a: ", a)
 
 # print "xx: ", xx
 # print "yy: ", yy
-print "support_vectors_: ", clf.support_vectors_
-print "clf.coef_: ", clf.coef_
+print("support_vectors_: ", clf.support_vectors_)
+print("clf.coef_: ", clf.coef_)
 
 # switching to the generic n-dimensional parameterization of the hyperplan to the 2D-specific equation
 # of a line y=a.x +b: the generic w_0x + w_1y +w_3=0 can be rewritten y = -(w_0/w_1) x + (w_3/w_1)
