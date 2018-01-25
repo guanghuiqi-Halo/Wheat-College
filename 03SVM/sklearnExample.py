@@ -14,6 +14,7 @@ clf.fit(X, Y)
 w = clf.coef_[0]
 a = -w[0]/w[1]
 xx = np.linspace(-5, 5)
+cvx = clf.intercept_[0]
 yy = a*xx - (clf.intercept_[0])/w[1]
 
 # plot the parallels to the separating hyperplane that pass through the support vectors
@@ -34,7 +35,7 @@ print("clf.coef_: ", clf.coef_)
 # of a line y=a.x +b: the generic w_0x + w_1y +w_3=0 can be rewritten y = -(w_0/w_1) x + (w_3/w_1)
 
 
-# plot the line, the points, and the nearest vectors to the plane
+# plot   the line, the points, and the nearest vectors to the plane
 pl.plot(xx, yy, 'k-')
 pl.plot(xx, yy_down, 'k--')
 pl.plot(xx, yy_up, 'k--')
